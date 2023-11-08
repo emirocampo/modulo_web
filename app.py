@@ -1,4 +1,8 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, jsonify
+from controller.producto_controller import *
+from controller.proveedor_controller import *
+from controller.categoria_controller import *
+from controller.inventario_controller import *
 
 app = Flask(__name__)
 
