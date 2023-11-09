@@ -1,4 +1,5 @@
 import psycopg2
+
 def connect():
     try:
         conn = psycopg2.connect(
@@ -6,7 +7,7 @@ def connect():
             port="5432",
             user="postgres",
             password="postgres",
-            database="prueba_1"
+            database="inventario"
         )
         return conn
     except (Exception, psycopg2.Error) as error:

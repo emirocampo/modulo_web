@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, jsonify, request
 from controller.producto_controller import *
 from controller.proveedor_controller import *
 from controller.categoria_controller import *
@@ -147,7 +147,7 @@ def editar_inventario(id):
 
 @app.route("/")
 def hello_world():
-    return render_template("index.html")
+    return render_template("/index/index.html")
 
 if __name__ == '__main__':
     app.run(debug=True)
