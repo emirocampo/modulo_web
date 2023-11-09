@@ -7,7 +7,7 @@ def connect():
             port="5432",
             user="postgres",
             password="postgres",
-            database="inventario"
+            database="admin"
         )
         return conn
     except (Exception, psycopg2.Error) as error:
