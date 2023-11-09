@@ -6,8 +6,8 @@ def connect():
             host="localhost",
             port="5432",
             user="postgres",
-            password="postgres",
-            database="admin"
+            password="admin",
+            database="inventario"
         )
         return conn
     except (Exception, psycopg2.Error) as error:

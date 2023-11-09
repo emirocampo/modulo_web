@@ -1,4 +1,4 @@
-from bd import connect
+from db import connect
 
 def get_proveedores():
     try:
