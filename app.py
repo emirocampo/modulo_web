@@ -1,8 +1,9 @@
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, redirect, url_for
 from controller.producto_controller import *
 from controller.proveedor_controller import *
 from controller.categoria_controller import *
 from controller.inventario_controller import *
+from controller.login_controller import *
 
 app = Flask(__name__)
 
@@ -148,6 +149,25 @@ def editar_inventario(id):
 @app.route("/")
 def hello_world():
     return render_template("/index/index.html")
+
+@app.route("/login", methods=["POST","GET"])
+def login():
+    if request.method == "GET":
+        return render_template("/login/login.html")
+    else:
+        # Obtenemos los datos del formulario
+        email = request.form.get("email")
+        password = request.form.get("password")
+
+        print(f"email {email} password {password}")
+        user = get_usuario(email,password)
+
+        # Validamos los datos
+        if user:
+            return redirect("/")
+        else:
+            return render_template("/login/404.html")
+
 
 if __name__ == '__main__':
     app.run(debug=True)
