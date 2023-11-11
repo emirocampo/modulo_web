@@ -12,7 +12,9 @@ app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 @app.route('/productos', methods=["GET"])
 def productos():
     productos = get_productos()
-    return jsonify(productos)
+    print(productos)
+    return render_template("/producto/tables.html",productos=productos)
+    # return jsonify(productos)
 
 @app.route('/producto/<int:id>', methods=["GET"])
 def producto(id):
