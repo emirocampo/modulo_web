@@ -175,13 +175,16 @@ def logout():
     session.clear()
     return redirect(url_for("login"))
 
-@app.route("/marketplace")
-def marketplace():
-    if "user" in session:
-        return render_template("/marketplace/marketplace.html")
-    else:
-        return "No tiene permiso para acceder a esta zona"
+@app.route("/index")
+def principal():
+    #if "user" in session:
+        return render_template("/index/index.html")
+    #else:
+    #    return "No tiene permiso para acceder a esta zona"
 
+@app.route("/crear-inventario")
+def vista_crear_inventario():
+    return render_template("/inventario/crear_inventario.html")
 
 if __name__ == '__main__':
     app.run(debug=True)
