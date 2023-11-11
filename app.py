@@ -178,7 +178,8 @@ def modificar_categoria(id):
 @app.route('/inventarios', methods=["GET"])
 def inventarios():
     inventarios = get_inventarios()
-    return jsonify(inventarios)
+    return render_template("/inventario/tables.html",inventarios=inventarios)
+    #return jsonify(inventarios)
 
 @app.route('/inventario/<int:id>', methods=["GET"])
 def inventario(id):
@@ -245,5 +246,33 @@ def principal():
 def vista_crear_inventario():
     return render_template("/inventario/crear_inventario.html")
 
+@app.route("/crear-producto")
+def vista_crear_producto():
+    return render_template("/producto/register.html")
+
+@app.route("/crear-categoria")
+def vista_crear_categoria():
+    return render_template("/categoria/register.html")
+
+@app.route("/crear-proveedor")
+def vista_crear_proveedor():
+    return render_template("/proveedor/register.html")
+
+@app.route("/editar-inventario")
+def vista_editar_inventario():
+    return render_template("/inventario/editar.html")
+
+@app.route("/editar-producto")
+def vista_editar_producto():
+    return render_template("/producto/editar.html")
+
+@app.route("/editar-categoria")
+def vista_editar_categoria():
+    return render_template("/categoria/editar.html")
+
+@app.route("/editar-proveedor")
+def vista_editar_proveedor():
+    return render_template("/proveedor/editar.html")
+    
 if __name__ == '__main__':
     app.run(debug=True)
