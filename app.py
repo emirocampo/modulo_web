@@ -12,8 +12,35 @@ app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 @app.route('/productos', methods=["GET"])
 def productos():
     productos = get_productos()
+    categorias = get_categorias()
+    proveedores = get_proveedores()
+    respuesta = []
+
     print(productos)
-    return render_template("/producto/tables.html",productos=productos)
+    for i in productos:
+        nombre_categoria = ""
+        nombre_proveedor = ""
+        for c in categorias:
+            print(c)
+            if i["id_categoria"] == c["id"]:
+                nombre_categoria = c["nombre"]
+        
+        for p in proveedores:
+            print(p)
+            if i["id_proveedor"] == p["id"]:
+                nombre_proveedor = p["nombre"]
+
+        data = {
+            "id" :  i["id"],
+            "nombre" : i["nombre"],
+            "precio" : i["precio"],
+            "nombre_categoria" : nombre_categoria,
+            "nombre_proveedor" : nombre_proveedor,
+            "fecha_creacion" : i["fecha_creacion"] 
+        }
+        respuesta.append(data)
+    print(respuesta)
+    return render_template("/producto/tables.html",respuesta=respuesta)
     # return jsonify(productos)
 
 @app.route('/producto/<int:id>', methods=["GET"])
@@ -55,8 +82,9 @@ def eliminar_producto(id):
 '''RUTAS PROVEEDORES'''
 @app.route('/proveedores', methods=["GET"])
 def proveedores():
-    categorias = get_proveedores()
-    return jsonify(categorias)
+    proveedores = get_proveedores()
+    return render_template("/proveedor/tables.html",proveedores=proveedores)
+    #return jsonify(categorias)
 
 @app.route('/proveedor/<int:id>', methods=["GET"])
 def proveedor(id):
@@ -90,7 +118,7 @@ def eliminar_proveedor(id):
 @app.route('/categorias', methods=["GET"])
 def categorias():
     categorias = get_categorias()
-    return jsonify(categorias)
+    return render_template("/categoria/tables.html",categorias=categorias)
 
 @app.route('/categoria/<int:id>', methods=["GET"])
 def categoria(id):
