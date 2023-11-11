@@ -1,6 +1,12 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify, request, redirect, url_for, session
+from controller.producto_controller import *
+from controller.proveedor_controller import *
+from controller.categoria_controller import *
+from controller.inventario_controller import *
+from controller.login_controller import *
 
 app = Flask(__name__)
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 '''RUTAS PRODUCTOS'''
 @app.route('/productos', methods=["GET"])
@@ -142,8 +148,40 @@ def editar_inventario(id):
 '''FIN RUTAS INVENTARIOS'''
 
 @app.route("/")
-def hello_world():
-    return render_template("index.html")
+def index():
+    return redirect(url_for("login"))
+
+@app.route("/login", methods=["POST","GET"])
+def login():
+    if request.method == "GET":
+        return render_template("/login/login.html")
+    else:
+        # Obtenemos los datos del formulario
+        email = request.form.get("email")
+        password = request.form.get("password")
+
+        print(f"email {email} password {password}")
+        user = get_usuario(email,password)
+
+        # Validamos los datos
+        if user:
+            session["user"] = email
+            return redirect(url_for("marketplace"))
+        else:
+            return render_template("/login/404.html")
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("login"))
+
+@app.route("/marketplace")
+def marketplace():
+    if "user" in session:
+        return render_template("/marketplace/marketplace.html")
+    else:
+        return "No tiene permiso para acceder a esta zona"
+
 
 if __name__ == '__main__':
     app.run(debug=True)
