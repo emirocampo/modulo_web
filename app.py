@@ -217,5 +217,17 @@ def principal():
 def vista_crear_inventario():
     return render_template("/inventario/crear_inventario.html")
 
+@app.route("/crear-producto")
+def vista_crear_producto():
+    return render_template("/producto/register.html")
+
+@app.route("/crear-categoria")
+def vista_crear_categoria():
+    return render_template("/categoria/register.html")
+
+@app.route("/crear-proveedor")
+def vista_crear_proveedor():
+    return render_template("/proveedor/register.html")
+    
 if __name__ == '__main__':
     app.run(debug=True)
