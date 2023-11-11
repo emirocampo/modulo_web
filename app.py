@@ -228,6 +228,22 @@ def vista_crear_categoria():
 @app.route("/crear-proveedor")
 def vista_crear_proveedor():
     return render_template("/proveedor/register.html")
+
+@app.route("/editar-inventario")
+def vista_editar_inventario():
+    return render_template("/inventario/editar.html")
+
+@app.route("/editar-producto")
+def vista_editar_producto():
+    return render_template("/producto/editar.html")
+
+@app.route("/editar-categoria")
+def vista_editar_categoria():
+    return render_template("/categoria/editar.html")
+
+@app.route("/editar-proveedor")
+def vista_editar_proveedor():
+    return render_template("/proveedor/editar.html")
     
 if __name__ == '__main__':
     app.run(debug=True)
