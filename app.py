@@ -152,7 +152,8 @@ def eliminar_categoria(id):
 @app.route('/inventarios', methods=["GET"])
 def inventarios():
     inventarios = get_inventarios()
-    return jsonify(inventarios)
+    return render_template("/inventario/tables.html",inventarios=inventarios)
+    #return jsonify(inventarios)
 
 @app.route('/inventario/<int:id>', methods=["GET"])
 def inventario(id):
