@@ -39,8 +39,17 @@
                             <td>
                                 <div class="container">
                                     <div class="row">
-                                        <div class="col"><button type="button" class="btn btn-warning" href="">Modificar</button></div>
-                                    <div class="col"><button type="button" class="btn btn-danger">Eliminar</button></div>
+                                        <div class="col">
+                                            <!-- <a href="#" class="btn btn-warning">
+                                                <i class="fas fa-edit"></i>
+                                            </a> -->
+                                            <a href="{{ url_for('ver_categoria', id=r['id']) }}" class="btn btn-warning"><i class="fas fa-edit"></i></a>
+                                        </div>
+                                        <div class="col">
+                                            <a href="#" class="btn btn-danger">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </td>

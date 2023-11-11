@@ -41,7 +41,7 @@
                     <div class="text-center">
                       <h1 class="h4 text-gray-900 mb-4">Ingresar</h1>
                     </div>
-                    <form class="user">
+                    <form class="user" action={{url_for("principal")}} method="POST">
                       <div class="form-group">
                         <input
                           type="email"
@@ -73,12 +73,7 @@
                           >
                         </div>
                       </div>
-                      <a
-                        href="index.html"
-                        class="btn btn-primary btn-user btn-block"
-                      >
-                        Login
-                      </a>
+                      <button type="submit" class="btn btn-primary btn-user btn-block" >Login</button>
                       <hr />
                     </form>
                   </div>

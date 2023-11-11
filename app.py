@@ -146,6 +146,32 @@ def editar_categoria(id):
 def eliminar_categoria(id):
     result = delete_categoria(id)
     return result
+
+@app.route('/ver-categoria/<int:id>', methods=['GET'])
+def ver_categoria(id):
+    # Recuperar la categoría correspondiente a través del ID
+    categoria = get_categoria(id)
+    print("categoria :" + str(categoria["id"]))
+    return render_template('/categoria/form-ver.html', respuesta=categoria["id"])
+    # return render_template('/categoria/form-modificar.html', respuesta=categoria["id"])
+'''FIN RUTAS CATEGORIAS'''
+
+@app.route('/modificar-categoria/<int:id>', methods=['GET', 'POST'])
+def modificar_categoria(id):
+    # Recuperar la categoría correspondiente a través del ID
+    categoria = get_categoria(id)
+    print("categoria :" + str(categoria))
+    if request.method == 'POST':
+        # Procesar el formulario de modificación aquí
+        nuevo_nombre = request.form.get('nombre')
+        # Actualizar la categoría en la base de datos o donde sea necesario
+
+        # Redirigir a la página principal o a donde desees después de la modificación
+        return redirect(url_for('index'))
+    else:
+        return render_template('categoria/form-modificar.html', respuesta=categoria)
+
+       # return render_template('/categoria/form-modificar.html', respuesta=categoria["id"])
 '''FIN RUTAS CATEGORIAS'''
 
 '''RUTAS INVENTARIOS'''
@@ -196,7 +222,7 @@ def login():
         # Validamos los datos
         if user:
             session["user"] = email
-            return redirect(url_for("marketplace"))
+            return redirect(url_for(""))
         else:
             return render_template("/login/404.html")
 
@@ -205,12 +231,15 @@ def logout():
     session.clear()
     return redirect(url_for("login"))
 
-@app.route("/index")
+@app.route("/index", methods = ["POST",])
 def principal():
-    #if "user" in session:
-        return render_template("/index/index.html")
-    #else:
-    #    return "No tiene permiso para acceder a esta zona"
+        if request.method == "POST":
+            #if "user" in session:
+                return render_template("/index/index.html")
+            #else:
+            #    return "No tiene permiso para acceder a esta zona"
+        else:
+            return render_template("/index/index.html")
 
 @app.route("/crear-inventario")
 def vista_crear_inventario():
