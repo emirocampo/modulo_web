@@ -147,31 +147,28 @@ def eliminar_categoria(id):
     result = delete_categoria(id)
     return result
 
-@app.route('/ver-categoria/<int:id>', methods=['GET'])
-def ver_categoria(id):
+@app.route('/ver-categoria/<int:cat_id>', methods=['GET'])
+def ver_categoria(cat_id):
     # Recuperar la categoría correspondiente a través del ID
-    categoria = get_categoria(id)
-    print("categoria :" + str(categoria["id"]))
-    return render_template('/categoria/form-ver.html', respuesta=categoria["id"])
-    # return render_template('/categoria/form-modificar.html', respuesta=categoria["id"])
+    categoria = get_categoria(cat_id)
+    print(categoria)
+    return render_template('/categoria/form-ver.html',categoria=categoria)
 '''FIN RUTAS CATEGORIAS'''
 
-@app.route('/modificar-categoria/<int:id>', methods=['GET', 'POST'])
-def modificar_categoria(id):
-    # Recuperar la categoría correspondiente a través del ID
-    categoria = get_categoria(id)
-    print("categoria :" + str(categoria))
-    if request.method == 'POST':
-        # Procesar el formulario de modificación aquí
-        nuevo_nombre = request.form.get('nombre')
-        # Actualizar la categoría en la base de datos o donde sea necesario
+# @app.route('/modificar-categoria/<int:id>', methods=['GET', 'POST'])
+# def modificar_categoria(id):
+#     # Recuperar la categoría correspondiente a través del ID
+#     categoria = get_categoria(id)
+#     print("categoria :" + str(categoria))
+#     if request.method == 'POST':
+#         # Procesar el formulario de modificación aquí
+#         nuevo_nombre = request.form.get('nombre')
+#         # Actualizar la categoría en la base de datos o donde sea necesario
 
-        # Redirigir a la página principal o a donde desees después de la modificación
-        return redirect(url_for('index'))
-    else:
-        return render_template('categoria/form-modificar.html', respuesta=categoria)
-
-       # return render_template('/categoria/form-modificar.html', respuesta=categoria["id"])
+#         # Redirigir a la página principal o a donde desees después de la modificación
+#         return redirect(url_for('index'))
+#     else:
+#         return render_template('categoria/form-modificar.html', respuesta=categoria)
 '''FIN RUTAS CATEGORIAS'''
 
 '''RUTAS INVENTARIOS'''
