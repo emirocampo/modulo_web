@@ -12,8 +12,35 @@ app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 @app.route('/productos', methods=["GET"])
 def productos():
     productos = get_productos()
+    categorias = get_categorias()
+    proveedores = get_proveedores()
+    respuesta = []
+
     print(productos)
-    return render_template("/producto/tables.html",productos=productos)
+    for i in productos:
+        nombre_categoria = ""
+        nombre_proveedor = ""
+        for c in categorias:
+            print(c)
+            if i["id_categoria"] == c["id"]:
+                nombre_categoria = c["nombre"]
+        
+        for p in proveedores:
+            print(p)
+            if i["id_proveedor"] == p["id"]:
+                nombre_proveedor = p["nombre"]
+
+        data = {
+            "id" :  i["id"],
+            "nombre" : i["nombre"],
+            "precio" : i["precio"],
+            "nombre_categoria" : nombre_categoria,
+            "nombre_proveedor" : nombre_proveedor,
+            "fecha_creacion" : i["fecha_creacion"] 
+        }
+        respuesta.append(data)
+    print(respuesta)
+    return render_template("/producto/tables.html",respuesta=respuesta)
     # return jsonify(productos)
 
 @app.route('/producto/<int:id>', methods=["GET"])
@@ -55,8 +82,9 @@ def eliminar_producto(id):
 '''RUTAS PROVEEDORES'''
 @app.route('/proveedores', methods=["GET"])
 def proveedores():
-    categorias = get_proveedores()
-    return jsonify(categorias)
+    proveedores = get_proveedores()
+    return render_template("/proveedor/tables.html",proveedores=proveedores)
+    #return jsonify(categorias)
 
 @app.route('/proveedor/<int:id>', methods=["GET"])
 def proveedor(id):
@@ -90,7 +118,7 @@ def eliminar_proveedor(id):
 @app.route('/categorias', methods=["GET"])
 def categorias():
     categorias = get_categorias()
-    return jsonify(categorias)
+    return render_template("/categoria/tables.html",categorias=categorias)
 
 @app.route('/categoria/<int:id>', methods=["GET"])
 def categoria(id):
@@ -118,13 +146,37 @@ def editar_categoria(id):
 def eliminar_categoria(id):
     result = delete_categoria(id)
     return result
+
+@app.route('/ver-categoria/<int:cat_id>', methods=['GET'])
+def ver_categoria(cat_id):
+    # Recuperar la categoría correspondiente a través del ID
+    categoria = get_categoria(cat_id)
+    print(categoria)
+    return render_template('/categoria/form-ver.html',categoria=categoria)
+'''FIN RUTAS CATEGORIAS'''
+
+# @app.route('/modificar-categoria/<int:id>', methods=['GET', 'POST'])
+# def modificar_categoria(id):
+#     # Recuperar la categoría correspondiente a través del ID
+#     categoria = get_categoria(id)
+#     print("categoria :" + str(categoria))
+#     if request.method == 'POST':
+#         # Procesar el formulario de modificación aquí
+#         nuevo_nombre = request.form.get('nombre')
+#         # Actualizar la categoría en la base de datos o donde sea necesario
+
+#         # Redirigir a la página principal o a donde desees después de la modificación
+#         return redirect(url_for('index'))
+#     else:
+#         return render_template('categoria/form-modificar.html', respuesta=categoria)
 '''FIN RUTAS CATEGORIAS'''
 
 '''RUTAS INVENTARIOS'''
 @app.route('/inventarios', methods=["GET"])
 def inventarios():
     inventarios = get_inventarios()
-    return jsonify(inventarios)
+    return render_template("/inventario/tables.html",inventarios=inventarios)
+    #return jsonify(inventarios)
 
 @app.route('/inventario/<int:id>', methods=["GET"])
 def inventario(id):
@@ -168,7 +220,7 @@ def login():
         # Validamos los datos
         if user:
             session["user"] = email
-            return redirect(url_for("marketplace"))
+            return redirect(url_for(""))
         else:
             return render_template("/login/404.html")
 
@@ -177,16 +229,47 @@ def logout():
     session.clear()
     return redirect(url_for("login"))
 
-@app.route("/index")
+@app.route("/index", methods = ["POST",])
 def principal():
-    #if "user" in session:
-        return render_template("/index/index.html")
-    #else:
-    #    return "No tiene permiso para acceder a esta zona"
+        if request.method == "POST":
+            #if "user" in session:
+                return render_template("/index/index.html")
+            #else:
+            #    return "No tiene permiso para acceder a esta zona"
+        else:
+            return render_template("/index/index.html")
 
 @app.route("/crear-inventario")
 def vista_crear_inventario():
     return render_template("/inventario/crear_inventario.html")
 
+@app.route("/crear-producto")
+def vista_crear_producto():
+    return render_template("/producto/register.html")
+
+@app.route("/crear-categoria")
+def vista_crear_categoria():
+    return render_template("/categoria/register.html")
+
+@app.route("/crear-proveedor")
+def vista_crear_proveedor():
+    return render_template("/proveedor/register.html")
+
+@app.route("/editar-inventario")
+def vista_editar_inventario():
+    return render_template("/inventario/editar.html")
+
+@app.route("/editar-producto")
+def vista_editar_producto():
+    return render_template("/producto/editar.html")
+
+@app.route("/editar-categoria")
+def vista_editar_categoria():
+    return render_template("/categoria/editar.html")
+
+@app.route("/editar-proveedor")
+def vista_editar_proveedor():
+    return render_template("/proveedor/editar.html")
+    
 if __name__ == '__main__':
     app.run(debug=True)

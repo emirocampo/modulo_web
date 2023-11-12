@@ -1,27 +1,46 @@
-{% extends "/index/base.html" %}
+{% extends "/base_vistas/base.html" %}
 
 {%block content%}
 
-
-<!-- Begin Page Content -->
-<div class="container-fluid">
-    <!-- Tabla de Datos -->
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
+  <!-- Begin Page Content -->
+  <div class="container-fluid">
+    <!-- Page Heading -->
+    <div
+      class="d-sm-flex align-items-center justify-content-between mb-4"
+    >
+      <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+      <a
+        href="#"
+        class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
+        ><i class="fas fa-download fa-sm text-white-50"></i> Generate
+        Report</a
+      >
+    </div>
+    <!-- Content Row -->
+    <div class="row">
+      <!-- Content Column -->
+      <div class="col-lg-12 mb-4">
+        <!-- Project Card Example -->
+        <div class="card shadow mb-4">
+          <div class="card-header py-3">
             <div class="row">
-                <div class="col-8">
-                    <h6 class="m-0 font-weight-bold text-primary">
-                        Tabla Productos
-                    </h6>
-                </div>
-                <!-- Botón Crear Categorias -->
-
-                <!-- Botón Productos -->
-
+              <div class="col-8">
+                <h6 class="m-0 font-weight-bold text-primary">
+                  PRODUCTOS
+                </h6>
+              </div>
+              <!-- Botón Crear Categorias -->
+              <div class="col-4 text-right">
+                <a href={{url_for('vista_crear_producto')}} class="btn btn-primary btn-icon-split">
+                  <span class="icon text-white-50">
+                    <i class="fas fa-check"></i>
+                  </span>
+                  <span class="text">Crear Producto</span>
+                </a>
+              </div>
             </div>
         </div>
-        <!-- La tabla -->
-        <div class="card-body">
+          <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
@@ -32,29 +51,46 @@
                             <th scope="col">Categoria</th>
                             <th scope="col">Proveedor</th>
                             <th scope="col">Creado</th>
-                            <th scope="col">Vence</th>
                             <th scope="col">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for producto in productos %}
+                        {% for r in respuesta %}
                         <tr>
-                            <td>{{ producto['id'] }}</td>
-                            <td>{{ producto['nombre'] }}</td>
-                            <td>{{ producto['precio'] }}</td>
-                            <td>{{ producto['id_categoria'] }}</td>
-                            <td>{{ producto['id_proveedor'] }}</td>
-                            <td>{{ producto['fecha_creacion'] }}</td>
+                            <td>{{ r['id'] }}</td>
+                            <td>{{ r['nombre'] }}</td>
+                            <td>{{ r['precio'] }}</td>
+                            <td>{{ r['nombre_categoria'] }}</td>
+                            <td>{{ r['nombre_proveedor'] }}</td>
+                            <td>{{ r['fecha_creacion'] }}</td>
+                            <td>
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col">
+                                            <a href={{url_for('vista_editar_producto')}} class="btn btn-warning">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                        </div>
+                                        <div class="col">
+                                            <a href="#" class="btn btn-danger">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
+          </div>
         </div>
+
+        <!-- Color System -->
+      </div>
     </div>
-</div>
-</div>
-<!-- /.container-fluid -->
+  </div>
+  <!-- /.container-fluid -->
 
-
-{%endblock%}
+{%endblock %}
