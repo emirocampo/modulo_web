@@ -8,7 +8,9 @@ from controller.login_controller import *
 app = Flask(__name__)
 app.secret_key = "GP2TkNjHVx"
 
-'''RUTAS PRODUCTOS'''
+######################################################################################
+################################ INC RUTAS PRODUCTOS #################################
+######################################################################################
 @app.route('/productos', methods=["GET"])
 def productos():
     productos = get_productos()
@@ -77,9 +79,13 @@ def editar_producto(id):
 def eliminar_producto(id):
     result = delete_producto(id)
     return result
-'''FIN RUTAS PRODUCTOS'''
+######################################################################################
+################################ FIN RUTAS PRODUCTOS #################################
+######################################################################################
 
-'''RUTAS PROVEEDORES'''
+######################################################################################
+############################### INC RUTAS PROVEEDORES ################################
+######################################################################################
 @app.route('/proveedores', methods=["GET"])
 def proveedores():
     proveedores = get_proveedores()
@@ -112,9 +118,13 @@ def editar_proveedor(id):
 def eliminar_proveedor(id):
     result = delete_proveedor(id)
     return result
-'''FIN RUTAS PROVEEDORES'''
+######################################################################################
+############################### FIN RUTAS PROVEEDORES ################################
+######################################################################################
 
-'''RUTAS CATEGORIAS'''
+######################################################################################
+################################ INC RUTAS CATEGORIAS ################################
+######################################################################################
 @app.route('/categorias', methods=["GET"])
 def categorias():
     categorias = get_categorias()
@@ -135,31 +145,36 @@ def crear_categoria():
     result = insert_categoria(nombre)
     return jsonify(result), 201
 
-@app.route('/editar-categoria/<int:id>', methods=["PUT"])
-def editar_categoria(id):
-    data = request.get_json()
-    nombre = data["nombre"]
-    result = edit_categoria(id, nombre)
-    return result
+@app.route('/modificar-categoria/<int:id>', methods=['GET', 'POST'])
+def modificar_categoria(id):
+    if request.method == 'POST':
+        # Procesar el formulario de modificación aquí
+        nuevo_nombre = request.form.get('nombre')
+        id = id
+        print(f"nuevo_nombre: {nuevo_nombre} id: {id}")
+        # Actualizar la categoría en la base de datos o donde sea necesario
+        result = edit_categoria(id, nuevo_nombre)
+        print(f"result: {result}")
+        # Redirigir a la página principal o a donde desees después de la modificación
+        return redirect(url_for("categorias"))
+    else:
+        # Recuperar la categoría correspondiente a través del ID
+        categoria = get_categoria(id)
+        return render_template('categoria/form-modificar.html', categoria=categoria)
 
 @app.route('/eliminar-categoria/<int:id>', methods=["DELETE"])
 def eliminar_categoria(id):
     result = delete_categoria(id)
     return result
 
-@app.route('/modificar-categoria/<int:id>', methods=['GET', 'POST'])
-def modificar_categoria(id):
-    if request.method == 'POST':
-        # Procesar el formulario de modificación aquí
-        nuevo_nombre = request.form.get('nombre')
-        # Actualizar la categoría en la base de datos o donde sea necesario
-        # Redirigir a la página principal o a donde desees después de la modificación
-        return redirect(url_for('index'))
-    else:
-        # Recuperar la categoría correspondiente a través del ID
-        categoria = get_categoria(id)
-        return render_template('categoria/form-modificar.html', categoria=categoria)
-'''FIN RUTAS CATEGORIAS'''
+
+######################################################################################
+################################ FIN RUTAS CATEGORIAS ################################
+######################################################################################
+
+######################################################################################
+############################### INC RUTAS INVENTARIOS ################################
+######################################################################################
 
 '''RUTAS INVENTARIOS'''
 @app.route('/inventarios', methods=["GET"])
