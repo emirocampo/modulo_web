@@ -6,9 +6,11 @@ from controller.inventario_controller import *
 from controller.login_controller import *
 
 app = Flask(__name__)
-app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
+app.secret_key = "GP2TkNjHVx"
 
-'''RUTAS PRODUCTOS'''
+######################################################################################
+################################ INC RUTAS PRODUCTOS #################################
+######################################################################################
 @app.route('/productos', methods=["GET"])
 def productos():
     productos = get_productos()
@@ -77,9 +79,13 @@ def editar_producto(id):
 def eliminar_producto(id):
     result = delete_producto(id)
     return result
-'''FIN RUTAS PRODUCTOS'''
+######################################################################################
+################################ FIN RUTAS PRODUCTOS #################################
+######################################################################################
 
-'''RUTAS PROVEEDORES'''
+######################################################################################
+############################### INC RUTAS PROVEEDORES ################################
+######################################################################################
 @app.route('/proveedores', methods=["GET"])
 def proveedores():
     proveedores = get_proveedores()
@@ -112,13 +118,20 @@ def editar_proveedor(id):
 def eliminar_proveedor(id):
     result = delete_proveedor(id)
     return result
-'''FIN RUTAS PROVEEDORES'''
+######################################################################################
+############################### FIN RUTAS PROVEEDORES ################################
+######################################################################################
 
-'''RUTAS CATEGORIAS'''
+######################################################################################
+################################ INC RUTAS CATEGORIAS ################################
+######################################################################################
 @app.route('/categorias', methods=["GET"])
 def categorias():
-    categorias = get_categorias()
-    return render_template("/categoria/tables.html",categorias=categorias)
+    if "user" in session:
+        categorias = get_categorias()
+        return render_template("/categoria/tables.html",categorias=categorias)
+    else:
+        return render_template("/base_vistas/Error.html")
 
 @app.route('/categoria/<int:id>', methods=["GET"])
 def categoria(id):
@@ -128,48 +141,55 @@ def categoria(id):
     else:
         return "Categoria no encontrado", 404
 
-@app.route('/crear-categoria', methods=["POST"])
+@app.route('/crear-categoria', methods=["POST","GET"])
 def crear_categoria():
-    data = request.get_json()
-    nombre = data["nombre"]
-    result = insert_categoria(nombre)
-    return jsonify(result), 201
+    if "user" in session:
+        if request.method == "GET":
+            return render_template("/categoria/register.html")
+        else:
+            nombre = request.form.get('nombre')
+            result = insert_categoria(nombre)
+            print(result)
+            return redirect(url_for("categorias"))
+    else:
+        return render_template("/base_vistas/Error.html")    
 
-@app.route('/editar-categoria/<int:id>', methods=["PUT"])
-def editar_categoria(id):
-    data = request.get_json()
-    nombre = data["nombre"]
-    result = edit_categoria(id, nombre)
-    return result
+@app.route('/modificar-categoria/<int:id>', methods=['GET', 'POST'])
+def modificar_categoria(id):
+    if request.method == "GET":
+        if "user" in session:
+            # Recuperar la categoría correspondiente a través del ID
+            categoria = get_categoria(id)
+            return render_template('categoria/form-modificar.html', categoria=categoria)
+        else:
+            return render_template("/base_vistas/Error.html")
+    else:
+        # Procesar el formulario de modificación aquí
+        nuevo_nombre = request.form.get('nombre')
+        id = id
+        print(f"nuevo_nombre: {nuevo_nombre} id: {id}")
+        # Actualizar la categoría en la base de datos o donde sea necesario
+        result = edit_categoria(id, nuevo_nombre)
+        print(f"result: {result}")
+        # Redirigir a la página principal o a donde desees después de la modificación
+        return redirect(url_for("categorias"))
 
-@app.route('/eliminar-categoria/<int:id>', methods=["DELETE"])
+@app.route('/eliminar-categoria/<int:id>', methods=['GET'])
 def eliminar_categoria(id):
-    result = delete_categoria(id)
-    return result
+    if "user" in session:
+        result = delete_categoria(id)
+        print(result)
+        return redirect(url_for("categorias"))
+    else:
+        return render_template("/base_vistas/Error.html")
 
-@app.route('/ver-categoria/<int:cat_id>', methods=['GET'])
-def ver_categoria(cat_id):
-    # Recuperar la categoría correspondiente a través del ID
-    categoria = get_categoria(cat_id)
-    print(categoria)
-    return render_template('/categoria/form-ver.html',categoria=categoria)
-'''FIN RUTAS CATEGORIAS'''
+######################################################################################
+################################ FIN RUTAS CATEGORIAS ################################
+######################################################################################
 
-# @app.route('/modificar-categoria/<int:id>', methods=['GET', 'POST'])
-# def modificar_categoria(id):
-#     # Recuperar la categoría correspondiente a través del ID
-#     categoria = get_categoria(id)
-#     print("categoria :" + str(categoria))
-#     if request.method == 'POST':
-#         # Procesar el formulario de modificación aquí
-#         nuevo_nombre = request.form.get('nombre')
-#         # Actualizar la categoría en la base de datos o donde sea necesario
-
-#         # Redirigir a la página principal o a donde desees después de la modificación
-#         return redirect(url_for('index'))
-#     else:
-#         return render_template('categoria/form-modificar.html', respuesta=categoria)
-'''FIN RUTAS CATEGORIAS'''
+######################################################################################
+############################### INC RUTAS INVENTARIOS ################################
+######################################################################################
 
 '''RUTAS INVENTARIOS'''
 @app.route('/inventarios', methods=["GET"])
@@ -201,43 +221,6 @@ def editar_inventario(id):
     return result
 '''FIN RUTAS INVENTARIOS'''
 
-@app.route("/")
-def index():
-    return redirect(url_for("login"))
-
-@app.route("/login", methods=["POST","GET"])
-def login():
-    if request.method == "GET":
-        return render_template("/login/login.html")
-    else:
-        # Obtenemos los datos del formulario
-        email = request.form.get("email")
-        password = request.form.get("password")
-
-        print(f"email {email} password {password}")
-        user = get_usuario(email,password)
-
-        # Validamos los datos
-        if user:
-            session["user"] = email
-            return redirect(url_for(""))
-        else:
-            return render_template("/login/404.html")
-
-@app.route("/logout")
-def logout():
-    session.clear()
-    return redirect(url_for("login"))
-
-@app.route("/index", methods = ["POST",])
-def principal():
-        if request.method == "POST":
-            #if "user" in session:
-                return render_template("/index/index.html")
-            #else:
-            #    return "No tiene permiso para acceder a esta zona"
-        else:
-            return render_template("/index/index.html")
 
 @app.route("/crear-inventario")
 def vista_crear_inventario():
@@ -247,9 +230,9 @@ def vista_crear_inventario():
 def vista_crear_producto():
     return render_template("/producto/register.html")
 
-@app.route("/crear-categoria")
-def vista_crear_categoria():
-    return render_template("/categoria/register.html")
+# @app.route("/crear-categoria")
+# def vista_crear_categoria():
+#     return render_template("/categoria/register.html")
 
 @app.route("/crear-proveedor")
 def vista_crear_proveedor():
@@ -270,6 +253,49 @@ def vista_editar_categoria():
 @app.route("/editar-proveedor")
 def vista_editar_proveedor():
     return render_template("/proveedor/editar.html")
+
+@app.route("/")
+def index():
+    return redirect(url_for("login"))
+
+@app.route("/index", methods = ["GET","POST"])
+def principal():
+        if request.method == "GET":
+            if "user" in session:
+                return render_template("/index/index.html")
+            else:
+                return render_template("/base_vistas/Error.html")
+        else:
+            return render_template("/index/index.html")
+
+@app.route("/login", methods=["POST","GET"])
+def login():
+    print("dentro del login")
+    if request.method == "GET":
+        return render_template("/login/login.html")
+    else:
+        # Obtenemos los datos del formulario
+        email = request.form.get("email")
+        password = request.form.get("password")
+        user = get_usuario(email,password)
+
+        # Validamos los datos
+        if user:
+            print(f"user: {user}")
+            print(f"email: {email}")
+            session["user"] = email
+            print(session["user"])
+            return redirect(url_for("principal"))
+        else:
+            return render_template("/login/404.html")
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("login"))
+
+
+
     
 if __name__ == '__main__':
     app.run(debug=True)
