@@ -127,8 +127,11 @@ def eliminar_proveedor(id):
 ######################################################################################
 @app.route('/categorias', methods=["GET"])
 def categorias():
-    categorias = get_categorias()
-    return render_template("/categoria/tables.html",categorias=categorias)
+    if "user" in session:
+        categorias = get_categorias()
+        return render_template("/categoria/tables.html",categorias=categorias)
+    else:
+        return render_template("/base_vistas/Error.html")
 
 @app.route('/categoria/<int:id>', methods=["GET"])
 def categoria(id):
@@ -138,16 +141,29 @@ def categoria(id):
     else:
         return "Categoria no encontrado", 404
 
-@app.route('/crear-categoria', methods=["POST"])
+@app.route('/crear-categoria', methods=["POST","GET"])
 def crear_categoria():
-    data = request.get_json()
-    nombre = data["nombre"]
-    result = insert_categoria(nombre)
-    return jsonify(result), 201
+    if "user" in session:
+        if request.method == "GET":
+            return render_template("/categoria/register.html")
+        else:
+            nombre = request.form.get('nombre')
+            result = insert_categoria(nombre)
+            print(result)
+            return redirect(url_for("categorias"))
+    else:
+        return render_template("/base_vistas/Error.html")    
 
 @app.route('/modificar-categoria/<int:id>', methods=['GET', 'POST'])
 def modificar_categoria(id):
-    if request.method == 'POST':
+    if request.method == "GET":
+        if "user" in session:
+            # Recuperar la categoría correspondiente a través del ID
+            categoria = get_categoria(id)
+            return render_template('categoria/form-modificar.html', categoria=categoria)
+        else:
+            return render_template("/base_vistas/Error.html")
+    else:
         # Procesar el formulario de modificación aquí
         nuevo_nombre = request.form.get('nombre')
         id = id
@@ -157,16 +173,15 @@ def modificar_categoria(id):
         print(f"result: {result}")
         # Redirigir a la página principal o a donde desees después de la modificación
         return redirect(url_for("categorias"))
-    else:
-        # Recuperar la categoría correspondiente a través del ID
-        categoria = get_categoria(id)
-        return render_template('categoria/form-modificar.html', categoria=categoria)
 
-@app.route('/eliminar-categoria/<int:id>', methods=["DELETE"])
+@app.route('/eliminar-categoria/<int:id>', methods=['GET'])
 def eliminar_categoria(id):
-    result = delete_categoria(id)
-    return result
-
+    if "user" in session:
+        result = delete_categoria(id)
+        print(result)
+        return redirect(url_for("categorias"))
+    else:
+        return render_template("/base_vistas/Error.html")
 
 ######################################################################################
 ################################ FIN RUTAS CATEGORIAS ################################
@@ -215,9 +230,9 @@ def vista_crear_inventario():
 def vista_crear_producto():
     return render_template("/producto/register.html")
 
-@app.route("/crear-categoria")
-def vista_crear_categoria():
-    return render_template("/categoria/register.html")
+# @app.route("/crear-categoria")
+# def vista_crear_categoria():
+#     return render_template("/categoria/register.html")
 
 @app.route("/crear-proveedor")
 def vista_crear_proveedor():
@@ -249,7 +264,7 @@ def principal():
             if "user" in session:
                 return render_template("/index/index.html")
             else:
-                return "No tiene permiso para acceder a esta zona"
+                return render_template("/base_vistas/Error.html")
         else:
             return render_template("/index/index.html")
 

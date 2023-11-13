@@ -3,13 +3,6 @@
 {%block content%}
 
 <!-- Begin Page Content -->
-<div class="container-fluid">
-    <!-- Page Heading -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                class="fas fa-download fa-sm text-white-50"></i> Generate
-            Report</a>
     </div>
     <!-- Content Row -->
     <div class="row">
@@ -26,7 +19,7 @@
                         </div>
                         <!-- Botón Crear Categorias -->
                         <div class="col-4 text-right">
-                            <a href={{url_for('vista_crear_categoria')}} class="btn btn-primary btn-icon-split">
+                            <a href={{url_for('crear_categoria')}} class="btn btn-primary btn-icon-split">
                                 <span class="icon text-white-50">
                                     <i class="fas fa-check"></i>
                                 </span>
@@ -58,7 +51,7 @@
                                                         class="btn btn-warning"><i class="fas fa-edit"></i></a>
                                                 </div>
                                                 <div class="col">
-                                                    <a href="#" class="btn btn-danger">
+                                                    <a href={{ url_for('eliminar_categoria', id=r['id']) }} class="btn btn-danger">
                                                         <i class="fas fa-trash-alt"></i>
                                                     </a>
                                                 </div>
