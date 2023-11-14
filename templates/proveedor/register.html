@@ -5,17 +5,7 @@
   <!-- Begin Page Content -->
   <div class="container-fluid">
     <!-- Page Heading -->
-    <div
-      class="d-sm-flex align-items-center justify-content-between mb-4"
-    >
-      <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-      <a
-        href="#"
-        class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
-        ><i class="fas fa-download fa-sm text-white-50"></i> Generate
-        Report</a
-      >
-    </div>
+    
     <!-- Content Row -->
     <div class="row">
       <!-- Content Column -->
@@ -31,7 +21,7 @@
             <div class="row">
               <div class="col-lg-12">
                 <div class="p-5">
-                  <form class="user">
+                  <form class="user" action={{url_for("crear_proveedor")}} method="POST">
                     <div class="form-group">
                       <label for="stock">Nombre</label>
                       <input
@@ -42,12 +32,13 @@
                         placeholder="Nombre del proveedor..."
                       />
                     </div>
-                    <a 
+                    <!-- <a 
                       href="login.html"
                       class="btn btn-primary btn-user btn-block"
                     >
                       Guardar
-                    </a>
+                    </a> -->
+                    <button type="submit" class="btn btn-primary btn-user btn-block">Guardar</button>
                     <hr />
                   </form>
                 </div>
