@@ -64,16 +64,34 @@ def crear_producto():
     result = insert_producto(nombre, precio, id_categoria, id_proveedor, fecha_creacion)
     return jsonify(result), 201
 
-@app.route('/editar-producto/<int:id>', methods=["PUT"])
+@app.route('/editar-producto/<int:id>', methods=["GET","POST"])
 def editar_producto(id):
-    data = request.get_json()
-    nombre = data["nombre"]
-    precio = data["precio"]
-    id_categoria = data["id_categoria"]
-    id_proveedor = data["id_proveedor"]
-    fecha_creacion = data["fecha_creacion"]
-    result = edit_producto(id, nombre, precio, id_categoria, id_proveedor, fecha_creacion)
-    return result
+    if request.method == "GET":
+        if "user" in session:
+            # Recuperar la categoría correspondiente a través del ID
+            categoria = get_categoria(id)
+            return render_template('categoria/form-modificar.html', categoria=categoria)
+        else:
+            return render_template("/base_vistas/Error.html")
+    else:
+        # Procesar el formulario de modificación aquí
+        nuevo_nombre = request.form.get('nombre')
+        id = id
+        print(f"nuevo_nombre: {nuevo_nombre} id: {id}")
+        # Actualizar la categoría en la base de datos o donde sea necesario
+        result = edit_categoria(id, nuevo_nombre)
+        print(f"result: {result}")
+        # Redirigir a la página principal o a donde desees después de la modificación
+        return redirect(url_for("categorias"))
+    ################################################
+    # data = request.get_json()
+    # nombre = data["nombre"]
+    # precio = data["precio"]
+    # id_categoria = data["id_categoria"]
+    # id_proveedor = data["id_proveedor"]
+    # fecha_creacion = data["fecha_creacion"]
+    # result = edit_producto(id, nombre, precio, id_categoria, id_proveedor, fecha_creacion)
+    # return result
 
 @app.route('/eliminar-producto/<int:id>', methods=["DELETE"])
 def eliminar_producto(id):
@@ -88,9 +106,11 @@ def eliminar_producto(id):
 ######################################################################################
 @app.route('/proveedores', methods=["GET"])
 def proveedores():
-    proveedores = get_proveedores()
-    return render_template("/proveedor/tables.html",proveedores=proveedores)
-    #return jsonify(categorias)
+    if "user" in session:
+        proveedores = get_proveedores()
+        return render_template("/proveedor/tables.html",proveedores=proveedores)
+    else:
+        return render_template("/base_vistas/Error.html")
 
 @app.route('/proveedor/<int:id>', methods=["GET"])
 def proveedor(id):
@@ -102,22 +122,51 @@ def proveedor(id):
 
 @app.route('/crear-proveedor', methods=["POST"])
 def crear_proveedor():
-    data = request.get_json()
-    nombre = data["nombre"]
-    result = insert_proveedor(nombre)
-    return jsonify(result), 201
+    if "user" in session:
+        if request.method == "GET":
+            return render_template("/proveedor/register.html")
+        else:
+            nombre = request.form.get('nombre')
+            result = insert_proveedor(nombre)
+            print(result)
+            return redirect(url_for("proveedores"))
+    else:
+        return render_template("/base_vistas/Error.html")
+    #######################################################
+    # data = request.get_json()
+    # nombre = data["nombre"]
+    # result = insert_proveedor(nombre)
+    # return jsonify(result), 201
 
-@app.route('/editar-proveedor/<int:id>', methods=["PUT"])
-def editar_proveedor(id):
-    data = request.get_json()
-    nombre = data["nombre"]
-    result = edit_proveedor(id, nombre)
-    return result
+@app.route('/modificar-proveedor/<int:id>', methods=["GET","POST"])
+def modificar_proveedor(id):
+    if request.method == "GET":
+        if "user" in session:
+            # Recuperar la categoría correspondiente a través del ID
+            proveedor = get_proveedor(id)
+            return render_template('/proveedor/form-modificar.html', proveedor=proveedor)
+        else:
+            return render_template("/base_vistas/Error.html")
+    else:
+        # Procesar el formulario de modificación aquí
+        nuevo_nombre = request.form.get('nombre')
+        id = id
+        print(f"nuevo_nombre: {nuevo_nombre} id: {id}")
+        # Actualizar el proveedor en la base de datos o donde sea necesario
+        result = edit_proveedor(id, nuevo_nombre)
+        print(f"result: {result}")
+        # Redirigir a la página principal o a donde desees después de la modificación
+        return redirect(url_for("proveedores"))
 
-@app.route('/eliminar-proveedor/<int:id>', methods=["DELETE"])
+@app.route('/eliminar-proveedor/<int:id>', methods=["GET"])
 def eliminar_proveedor(id):
-    result = delete_proveedor(id)
-    return result
+    if "user" in session:
+        result = delete_proveedor(id)
+        print(result)
+        return redirect(url_for("proveedores"))
+    else:
+        return render_template("/base_vistas/Error.html")
+
 ######################################################################################
 ############################### FIN RUTAS PROVEEDORES ################################
 ######################################################################################
@@ -250,9 +299,9 @@ def vista_editar_producto():
 def vista_editar_categoria():
     return render_template("/categoria/editar.html")
 
-@app.route("/editar-proveedor")
-def vista_editar_proveedor():
-    return render_template("/proveedor/editar.html")
+# @app.route("/editar-proveedor")
+# def vista_editar_proveedor():
+#     return render_template("/proveedor/editar.html")
 
 @app.route("/")
 def index():
